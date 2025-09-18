@@ -1,0 +1,7 @@
+services:
+  pulsefeedback:
+    build: .
+    env_file: .env
+    ports:
+      - "7000:7000"
+    restart: unless-stopped

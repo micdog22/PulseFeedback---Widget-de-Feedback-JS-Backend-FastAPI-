@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PulseFeedback — Admin</title>
+  <link rel="stylesheet" href="/static/admin/styles.css">
+</head>
+<body>
+<header>
+  <div>PulseFeedback — Admin</div>
+  <nav><a href="/docs">Docs</a></nav>
+</header>
+<div class="container">
+  <div class="card">
+    <form method="get" class="row">
+      <div>
+        <label class="small">Busca</label>
+        <input name="q" value="{{ q or '' }}" placeholder="texto em título/descrição/URL">
+      </div>
+      <div>
+        <label class="small">Status</label>
+        <select name="status">
+          <option value="">Todos</option>
+          {% for s in ['open','review','resolved','rejected'] %}
+            <option value="{{ s }}" {% if status==s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div><button>Filtrar</button></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Título</th><th>Tipo</th><th>URL</th><th>Status</th><th>Ação</th></tr>
+      </thead>
+      <tbody>
+        {% for f in items %}
+        <tr>
+          <td>#{{ f.id }}</td>
+          <td title="{{ f.description }}">{{ f.title }}</td>
+          <td><span class="badge">{{ f.type }}</span></td>
+          <td><a href="{{ f.page_url }}" target="_blank">{{ f.page_url[:40] }}{% if f.page_url|length>40 %}…{% endif %}</a></td>
+          <td><span class="badge">{{ f.status }}</span></td>
+          <td>
+            <form method="post" action="/admin/feedback/{{ f.id }}/status" style="display:flex;gap:8px;align-items:center">
+              <select name="status">
+                {% for s in ['open','review','resolved','rejected'] %}
+                  <option value="{{ s }}" {% if f.status==s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+              <button>Salvar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
